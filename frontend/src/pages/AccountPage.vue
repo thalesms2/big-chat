@@ -144,7 +144,7 @@ async function addCredit() {
   try {
     await api.put(`/clients/${auth.clientDocument}`, {
       action: 'balance',
-      value: Number(String(creditAmount.value).replaceAll('.', '')),
+      value: Number(String(creditAmount.value.toFixed(2)).replaceAll('.', '')),
     })
     showSnackbar(`R$ ${creditAmount.value} adicionado com sucesso.`, 'success')
     creditAmount.value = null
