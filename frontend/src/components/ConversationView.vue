@@ -119,6 +119,7 @@
 import { ref, computed, watch, nextTick, defineExpose, onMounted, onUnmounted } from 'vue'
 import MessageBubble from './MessageBubble.vue'
 import { api } from '@/composables/useApi'
+import { useSnackbar } from '@/composables/useSnackbar'
 import type { ConversationItem } from './ConversationList.vue'
 
 const props = defineProps<{
@@ -127,6 +128,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{ 'message-sent': [conversationId: number] }>()
+
+const { showSnackbar } = useSnackbar()
 
 const messages = ref<any[]>([])
 const loading = ref(false)
@@ -211,6 +214,12 @@ async function sendMessage() {
     await nextTick()
     scrollToBottom()
     emit('message-sent', data.conversationId)
+  } catch (err: any) {
+    if (err?.response?.status === 422) {
+      showSnackbar('Saldo insuficiente para enviar a mensagem', 'error')
+    } else {
+      showSnackbar('Erro ao enviar mensagem', 'error')
+    }
   } finally {
     sending.value = false
   }

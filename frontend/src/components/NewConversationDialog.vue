@@ -9,9 +9,8 @@
           type="number"
           variant="outlined"
           density="comfortable"
-          hide-details="auto"
+          hide-details
           autofocus
-          :error-messages="error"
           @keyup.enter="confirm"
         />
       </v-card-text>
@@ -29,6 +28,7 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
 import { api } from '@/composables/useApi'
+import { useSnackbar } from '@/composables/useSnackbar'
 
 const props = defineProps<{ modelValue: boolean }>()
 const emit = defineEmits<{
@@ -36,30 +36,27 @@ const emit = defineEmits<{
   'select': [recipientId: number, displayName: string]
 }>()
 
+const { showSnackbar } = useSnackbar()
+
 const dialog = ref(props.modelValue)
 const recipientId = ref<number | null>(null)
-const error = ref('')
 const loading = ref(false)
 
 watch(() => props.modelValue, v => { dialog.value = v })
 watch(dialog, v => {
   emit('update:modelValue', v)
-  if (!v) {
-    recipientId.value = null
-    error.value = ''
-  }
+  if (!v) recipientId.value = null
 })
 
 async function confirm() {
   if (!recipientId.value) return
-  error.value = ''
   loading.value = true
   try {
     const { data } = await api.get(`/clients/id/${recipientId.value}`)
     emit('select', data.id, data.name)
     dialog.value = false
   } catch {
-    error.value = 'Cliente não encontrado'
+    showSnackbar('Cliente não encontrado', 'error')
   } finally {
     loading.value = false
   }
