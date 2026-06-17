@@ -83,7 +83,7 @@ npx prisma generate
 - [X] Lista de conversas recentes
 - [X] Tela de Chat com histórico de mensagens
 - [X] Envio de novas mensagens
-- [ ] Pesquisa simples na conversa
+- [X] Pesquisa simples na conversa
 - [X] Visualização do saldo restante
 - [X] Feedback de estado da mensagem em tempo real
 - [X] Notificações para novas mensagens e alteração de estado
