@@ -4,10 +4,101 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+    provider = "postgresql"
+}
+
+model Client {
+    id               Int            @id @default(autoincrement())
+    name             String
+    documentId       String         @unique
+    documentType     DocumentType
+    planType         Plan
+    balance          Int            @default(0)
+    limit            Int            @default(0)
+    active           Boolean
+    messagesSent     Message[]      @relation("messagesSent")
+    messagesReceived Message[]      @relation("messagesReceived")
+    ownChats         Conversation[] @relation("ownChats")
+    openChats        Conversation[] @relation("openChats")
+    transactions     Transaction[]
+}
+
+model Transaction {
+    id          Int             @id @default(autoincrement())
+    clientId    Int
+    client      Client          @relation(fields: [clientId], references: [id])
+    value       Int
+    type        TransactionType
+    description String
+    timestamp   DateTime
+    messageId   Int?            @unique
+    message     Message?        @relation(fields: [messageId], references: [id])
+}
+
+enum TransactionType {
+    CREDIT
+    DEBIT
+}
+
+enum DocumentType {
+    CPF
+    CNPJ
+}
+
+enum Plan {
+    PREPAID
+    POSPAID
+}
+
+model Message {
+    id             Int           @id @default(autoincrement())
+    type           MessageType
+    conversationId Int
+    conversation   Conversation  @relation(fields: [conversationId], references: [id])
+    senderId       Int
+    sender         Client        @relation("messagesSent", fields: [senderId], references: [id])
+    recipientId    Int
+    recipient      Client        @relation("messagesReceived", fields: [recipientId], references: [id])
+    content        String
+    timestamp      DateTime
+    priority       Priority
+    status         MessageStatus
+    cost           Decimal
+    transaction    Transaction?
+}
+
+enum MessageType {
+    SMS
+    WHATS
+}
+
+enum Priority {
+    NORMAL
+    URGENT
+}
+
+enum MessageStatus {
+    QUEUED
+    PROCESSING
+    SENT
+    DELIVERED
+    READ
+    FAILED
+}
+
+model Conversation {
+    id                 Int       @id @default(autoincrement())
+    clientId           Int
+    client             Client    @relation("ownChats", fields: [clientId], references: [id])
+    recipientId        Int
+    recipient          Client    @relation("openChats", fields: [recipientId], references: [id])
+    recipientName      String
+    lastMessageContent String?
+    lastMessageTime    DateTime?
+    unreadCount        Int       @default(0)
+    messages           Message[]
 }
