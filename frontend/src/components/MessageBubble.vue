@@ -57,7 +57,7 @@ const statusIcon = computed(() => {
 })
 
 const statusColor = computed(() => {
-  if (props.message.status === 'READ') return '#29B6F6'
+  if (props.message.status === 'READ') return '#00ff44'
   if (props.message.status === 'FAILED') return 'error'
   return ''
 })

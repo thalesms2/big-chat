@@ -90,4 +90,11 @@ npx prisma generate
 - [X] Webhook de ativação quando a conversa entra em foco, para alteração de estado da mensagem para lida
 - [ ] Histórico de transações
 - [ ] Criação de planos e lógica para quando o plano for pago adicionar o valor no balanço da conta
+- [ ] Integração com telegram para envio e recebimento de mensagens
+- [ ] Testes unitários no front-end
+- [ ] Testes E2E no front-end com Playwight
+- [ ] Algoritmo anti-starvation para mensagens com prioridade `NORMAL` não ficarem bloqueadas indefinidamente
+- [ ] Adição de roles na autenticação para clientes conseguirem acessar de mais de uma conta e ter um controle melhor de administração
+- [ ] Adição de logs do core da aplicação e coleta de dados estratégicas
+- [ ] Dashboard para admin com as metricas coletadas e gerencimento completo de usuários e log em tempo real do worker/server
 
